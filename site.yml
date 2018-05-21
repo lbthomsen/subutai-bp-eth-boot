@@ -21,13 +21,31 @@
   remote_user: root
   tasks: 
 
-    - name: install aptitude
+    - name: Install aptitude
       apt: 
         name: aptitude
-        allow_unauthenticated: yes
 
-    - name: install dirmngr
+    - name: Install dirmngr
       apt: 
         name: dirmngr
-        allow_unauthenticated: yes
       
+    - name: Install Ethereum repo key
+      apt_key: 
+        keyserver: keyserver.ubuntu.com
+        id: 1C52189C923F6CA9
+
+    - name: Install Ethereum repo
+      apt_repository: 
+        repo: deb http://ppa.launchpad.net/ethereum/ethereum/ubuntu xenial main
+        state: present
+
+    - name: Install required debs
+      apt: 
+        name: "{{ item }}"
+        state: present
+        allow_unauthenticated: yes
+      with_items: 
+        - ethereum
+        - apache2
+
+    

@@ -9,7 +9,15 @@
             "hostname": "bn",
             "template": "debian-stretch",
             "peer-criteria": "BN-GROUP",
-            "size": "${containerSize}"
+            "size": "${containerSize}", 
+            "port-mapping": [
+                {
+                    "protocol": "tcp", 
+                    "domain": "${domain}", 
+                    "internal-port": "${port}", 
+                    "external-port": "${port}"
+                }
+            ]
         }
     ],
     "peer-criteria": [
@@ -22,6 +30,14 @@
         "source-url": "https://github.com/lbthomsen/subutai-bp-eth-boot/archive/master.zip",
         "ansible-playbook": "site.yml",
         "extra-vars": [
+            {
+                "key": "domain", 
+                "value": "${domain}"
+            },
+            {
+                "key": "boot_port", 
+                "value": "${port}"
+            },
             {
                 "key": "ethereum_network_id", 
                 "value": "${ethereumNetworkId}"
@@ -37,6 +53,18 @@
         ]
     },
     "user-variables": {
+        "domain": {
+            "description": "Enter the application domain name",
+            "type": "domain",
+            "default": "change.the.domain",
+            "validation": "[a-zA-Z0-9]+"
+        },
+        "port": {
+            "description": "Enter port number", 
+            "type": "string", 
+            "default": "30301", 
+            "validation": "[0-9]+"
+        }, 
         "environmentName": {
             "description": "Enter the environment name",
             "type": "string",

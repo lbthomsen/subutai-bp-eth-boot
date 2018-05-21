@@ -1,0 +1,13 @@
+[Unit]
+Description=Run Geth
+
+[Service]
+Type=simple
+EnvironmentFile=-/etc/default/geth
+ExecStart=/usr/local/sbin/start_geth
+Restart=on-failure
+LimitNICE=+10
+
+[Install]
+WantedBy=multi-user.target
+Alias=geth.service
