@@ -1,34 +1,39 @@
 ---
 
-- hosts: all
-  gather_facts: false
-  remote_user: root
-  tasks: 
+#- hosts: all
+#  gather_facts: false
+#  remote_user: root
+#  tasks: 
 
-    - name: Update
-      raw: apt-get -y --allow-unauthenticated update || true
+#    - name: Update
+#      raw: apt-get -y --allow-unauthenticated update || true
 
-    - name: Ensure python is available
-      raw: test -e /usr/bin/python || apt install -y --allow-unauthenticated python-minimal
+#    - name: Ensure python is available
+#      raw: test -e /usr/bin/python || apt install -y --allow-unauthenticated python-minimal
 
-    - name: Ensure python-apt is available
-      raw: test -d /usr/share/python-apt || apt install -y --allow-unauthenticated python-apt
+#    - name: Ensure python-apt is available
+#      raw: test -d /usr/share/python-apt || apt install -y --allow-unauthenticated python-apt
 
-    - name: Upgrade
-      raw: apt-get -y --allow-unauthenticated upgrade
+#    - name: Upgrade
+#      raw: apt-get -y --allow-unauthenticated upgrade
 
 - hosts: bn
   remote_user: root
   tasks: 
 
-    - name: Install aptitude
-      apt: 
-        name: aptitude
+    - name: Update apt cache
+      apt:
+        update_cache: true
+        upgrade: true
 
-    - name: Install dirmngr
+    - name: Install required debs
       apt: 
-        name: dirmngr
-      
+        name: "{{ item }}"
+        state: present
+      with_items: 
+        - aptitude
+        - dirmngr
+
     - name: Install Ethereum repo key
       apt_key: 
         keyserver: keyserver.ubuntu.com
@@ -43,9 +48,32 @@
       apt: 
         name: "{{ item }}"
         state: present
-        allow_unauthenticated: yes
+        update_cache: yes
       with_items: 
         - ethereum
-        - apache2
 
+    - name: Install start_geth
+      template: 
+        src: files/start_geth
+        dest: /usr/local/sbin/start_geth
+      register: geth
+
+    - name: Install geth service
+      template: 
+        src: files/geth.service
+        dest: /lib/systemd/system
+      register: geth
+
+    - name: Install geth defaults
+      template:
+        src: files/geth.default
+        dest: /etc/default/geth
+      register: geth
     
+    - name: Restart geth
+      systemd:
+        name: geth
+        daemon_reload: yes
+        enabled: true
+        masked: false
+        state: restarted

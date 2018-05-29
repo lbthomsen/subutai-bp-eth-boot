@@ -47,7 +47,7 @@ EOF
 
         # Finally run geth with miner
         echo "Firing up geth in private mode"
-        nice -n 10 geth --networkid $NETWORK_ID --datadir ~/.ethereum/$NETWORK --rpc --rpcport 8545 --rpcapi db,eth,net,web3,personal --verbosity 3 --mine --minerthreads 1
+        nice -n 10 geth --networkid $NETWORK_ID --datadir ~/.ethereum/$NETWORK --rpc --rpcport 8545 --rpcapi db,eth,net,web3,personal --verbosity 3
 
     else 
         echo "Private network with no ID?"

@@ -78,7 +78,7 @@
             "validation": "SMALL,LARGE,HUGE"
         }, 
         "ethereumNetworkId": {
-            "description": "Enter private blockchain ID (if network = private!)",
+            "description": "Enter private blockchain ID",
             "type": "string",
             "default": "",
             "validation": "[0-9]+"

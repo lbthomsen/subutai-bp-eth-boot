@@ -1,2 +1,3 @@
 # Default network for geth
-NETWORK=
+NETWORK="private"
+NETWORK_ID={{ ethereum_network_id }}
